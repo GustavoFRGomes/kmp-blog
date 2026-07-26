@@ -79,6 +79,10 @@ header, footer {
   content: "👨‍💻";
 }
 
+.icon.codeberg::before {
+  content: "⛰️";
+}
+
 .icon.bluesky::before {
   content: "🦋";
 }

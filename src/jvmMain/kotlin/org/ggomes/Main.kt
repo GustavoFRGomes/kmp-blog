@@ -124,6 +124,7 @@ fun generateSocialLinks(): FlowContent.() -> Unit = {
         h3 { +"Connect with me" }
         ul {
             li { a(href = "https://github.com/GustavoFRGomes", classes = "icon github") { +"" } }
+            li { a(href = "https://codeberg.org/ggomes", classes = "icon codeberg") { +"" } }
             li { a(href = "https://bsky.app/profile/gfrgomes.bsky.social", classes = "icon bluesky") { +"" } }
             li { a(href = "https://linkedin.com/in/gustavo-gomes-501878b0", classes = "icon linkedin") { +"" } }
             li { a(href = "mailto:ggomes@mail.com", classes = "icon email") { +"" } }
