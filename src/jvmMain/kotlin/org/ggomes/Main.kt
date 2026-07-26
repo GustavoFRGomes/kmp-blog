@@ -140,6 +140,7 @@ fun generateIndex(posts: List<Post>): String = createHTML().html {
         link(rel = "stylesheet", href = "style.css")
     }
     body {
+        button(classes = "theme-toggle") { id = "theme-toggle"; +"🌙" }
         h1 { +"My Blog" }
         div(classes = "post-list") {
             posts.forEach { post ->
@@ -157,6 +158,7 @@ fun generateIndex(posts: List<Post>): String = createHTML().html {
         }
         hr {}
         generateSocialLinks()()
+        script(src = "theme.js") {}
     }
 }
 
@@ -167,12 +169,14 @@ fun generatePost(post: Post): String = createHTML().html {
         link(rel = "stylesheet", href = "style.css")
     }
     body {
+        button(classes = "theme-toggle") { id = "theme-toggle"; +"🌙" }
         a(href = "index.html") { +"← Back to home" }
         h1 { +post.title }
         p { +post.formattedDate() }
         unsafe { +post.content }
         hr {}
         generateSocialLinks()()
+        script(src = "theme.js") {}
     }
 }
 

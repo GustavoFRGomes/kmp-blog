@@ -1,47 +1,145 @@
-body {
-  font-family: Arial, sans-serif;
-  max-width: 800px;
-  margin: 2rem auto;
-  padding: 0 1rem;
-  line-height: 1.6;
+/* ===== Theme Variables ===== */
+:root {
+  --bg: #ffffff;
+  --bg-card: #fafafa;
+  --text: #1f2937;
+  --text-muted: #6b7280;
+  --border: #e5e7eb;
+  --accent: #3b82f6;
+  --accent-hover: #2563eb;
+  --code-bg: #f4f4f4;
+  --code-text: #2d2d2d;
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
+
+[data-theme="dark"] {
+  --bg: #0f172a;
+  --bg-card: #1e293b;
+  --text: #f1f5f9;
+  --text-muted: #94a3b8;
+  --border: #334155;
+  --accent: #60a5fa;
+  --accent-hover: #93c5fd;
+  --code-bg: #2d2d2d;
+  --code-text: #e5e7eb;
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* ===== Base Styles ===== */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  line-height: 1.7;
+}
+
 a {
-  color: #1e88e5;
+  color: var(--accent);
   text-decoration: none;
 }
+
 a:hover {
   text-decoration: underline;
 }
-pre, code {
-  background: #f4f4f4;
-  border-radius: 3px;
-  padding: 0.2rem;
-}
+
+/* ===== Typography ===== */
 h1, h2, h3 {
   margin-top: 1.5rem;
-  color: #333;
+  color: var(--text);
+  font-weight: 600;
+  line-height: 1.3;
 }
+
+h1 { font-size: 2rem; }
+h2 { font-size: 1.5rem; }
+h3 { font-size: 1.2rem; }
+
+p { margin: 1rem 0; }
+
+/* ===== Code ===== */
+pre, code {
+  font-family: 'Fira Code', 'Courier New', monospace;
+  background: var(--code-bg);
+  color: var(--code-text);
+  border-radius: 4px;
+  padding: 0.2rem;
+}
+
+pre {
+  padding: 1rem;
+  overflow-x: auto;
+  box-shadow: var(--shadow);
+}
+
+code {
+  padding: 0.15rem 0.3rem;
+  font-size: 0.9em;
+}
+
+/* ===== Lists ===== */
 ul {
   list-style: none;
   padding: 0;
 }
+
 li {
   margin: 0.5rem 0;
 }
+
+/* ===== Header/Footer ===== */
 header, footer {
   text-align: center;
   margin: 2rem 0;
-  color: #777;
+  color: var(--text-muted);
 }
 
+/* ===== Post List ===== */
+.post-list {
+  margin: 2rem 0;
+}
+
+.post-item {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.post-item:last-child {
+  border-bottom: none;
+}
+
+.post-item h2 {
+  margin-bottom: 0.5rem;
+}
+
+.post-date {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin: 0.5rem 0;
+}
+
+.post-preview {
+  margin: 1rem 0;
+  color: var(--text-muted);
+}
+
+.read-more {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+/* ===== Social Links ===== */
 .social-links {
   margin-top: 2rem;
   padding-top: 1rem;
-  border-top: 1px solid #eee;
+  border-top: 1px solid var(--border);
 }
 
 .social-links h3 {
-  color: #555;
+  color: var(--text-muted);
   font-size: 1.2rem;
 }
 
@@ -60,41 +158,56 @@ header, footer {
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  width: 40px;
-  height: 40px;
-  background-color: #f5f5f5;
+  width: 44px;
+  height: 44px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
   border-radius: 50%;
-  transition: background-color 0.2s, transform 0.2s;
+  transition: all 0.2s;
   font-size: 1.5rem;
+  color: var(--text);
 }
 
 .social-links a:hover {
-  background-color: #e0e0e0;
-  text-decoration: none;
+  background-color: var(--border);
   transform: scale(1.1);
 }
 
-/* Icons using pseudo-elements */
-.icon.github::before {
-  content: "👨‍💻";
+/* ===== Theme Toggle ===== */
+.theme-toggle {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  transition: all 0.3s ease;
+  z-index: 1000;
+  box-shadow: var(--shadow);
 }
 
-.icon.codeberg::before {
-  content: "⛰️";
+.theme-toggle:hover {
+  transform: scale(1.1);
+  border-color: var(--accent);
 }
 
-.icon.bluesky::before {
-  content: "🦋";
+.theme-toggle:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
-.icon.linkedin::before {
-  content: "💼";
-}
-
-.icon.email::before {
-  content: "✉️";
-}
-
-.icon.rss::before {
-  content: "📰";
-}
+/* ===== Icons ===== */
+.icon.github::before { content: "👨‍💻"; }
+.icon.codeberg::before { content: "⛰️"; }
+.icon.bluesky::before { content: "🦋"; }
+.icon.linkedin::before { content: "💼"; }
+.icon.email::before { content: "✉️"; }
+.icon.rss::before { content: "📰"; }
