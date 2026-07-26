@@ -23,12 +23,17 @@ A simple Kotlin Multiplatform static blog generator.
 
 3. Preview locally:
 
-   Copy `build/site` to `docs` folder:
+   Serve the generated site with any static file server:
+
    ```bash
-   mkdir -p docs
-   cp -r build/site/* docs/
+   # Python (built-in, no install needed)
+   cd build/site && python3 -m http.server 8000
+
+   # Or with npx serve
+   npx serve build/site
    ```
-   Then serve with any static server or open `docs/index.html`.
+
+   Then open http://localhost:8000 in your browser.
 
 ## Deploy
 
