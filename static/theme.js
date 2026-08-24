@@ -2,8 +2,10 @@
   const root = document.documentElement;
   const toggle = document.getElementById('theme-toggle');
 
+  const params = new URLSearchParams(window.location.search);
+  const urlTheme = params.get('theme');
   const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  const currentTheme = systemPrefersDark ? 'dark' : 'light';
+  let currentTheme = (urlTheme === 'dark' || urlTheme === 'light') ? urlTheme : (systemPrefersDark ? 'dark' : 'light');
 
   root.setAttribute('data-theme', currentTheme);
 
