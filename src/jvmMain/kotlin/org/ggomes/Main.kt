@@ -92,6 +92,30 @@ fun main() {
     posts.forEach { post ->
         File(outputDir, post.slug).writeText(generatePost(post))
     }
+
+    // Model reviews
+    val modelReviewsDir = File("content/model-reviews")
+    val modelReviews = modelReviewsDir.listFiles { _, name -> name.endsWith(".md") }?.map { file ->
+        val md = file.readText()
+        val cleanMd = md.replace("""^---\s*\n(.*?\n)---\s*\n""".toRegex(RegexOption.DOT_MATCHES_ALL), "")
+            .replace("""^date:\s*.+$""".toRegex(RegexOption.MULTILINE), "")
+        val parser = Parser.builder().extensions(listOf(TablesExtension.create(), StrikethroughExtension.create())).build()
+        val doc = parser.parse(cleanMd)
+        val renderer = HtmlRenderer.builder().extensions(listOf(TablesExtension.create(), StrikethroughExtension.create())).build()
+        val html = renderer.render(doc)
+        val title = file.nameWithoutExtension.replace('-', ' ').capitalizeWords()
+        val preview = extractPreview(html)
+        val dateMatch = """^date:\s*(.+)$""".toRegex(RegexOption.MULTILINE).find(md)
+        val date = dateMatch?.groupValues?.get(1)?.trim() ?: ""
+        Post(title, date, html, "model-reviews/" + file.nameWithoutExtension + ".html", preview, false)
+    }?.sortedByDescending { it.date } ?: emptyList()
+
+    val modelReviewsOutputDir = File(outputDir, "model-reviews")
+    modelReviewsOutputDir.mkdirs()
+    File(modelReviewsOutputDir, "index.html").writeText(generateModelReviewsIndex(modelReviews))
+    modelReviews.forEach { review ->
+        File(modelReviewsOutputDir, review.slug.removePrefix("model-reviews/")).writeText(generatePost(review, modelReviews = true))
+    }
     File(outputDir, "rss.xml").writeText(generateRSS(posts))
     // Puzzle page:
     File(outputDir, "puzzle.html").writeText(kotlinPuzzle)
@@ -119,6 +143,32 @@ data class Post(val title: String, val date: String, val content: String, val sl
     }
 }
 
+fun generateModelReviewsIndex(reviews: List<Post>): String = createHTML().html {
+    head {
+        meta(charset = "utf-8")
+        title("AI Model Reviews")
+        link(rel = "stylesheet", href = "../style.css")
+    }
+    body {
+        button(classes = "theme-toggle") { id = "theme-toggle"; +"🌙" }
+        a(href = "../index.html") { +"← My Blog" }
+        h1 { +"AI Model Reviews" }
+        div(classes = "post-list") {
+            reviews.forEach { review ->
+                div(classes = "post-item") {
+                    h2 { a(href = review.slug.removePrefix("model-reviews/")) { +review.title } }
+                    p(classes = "post-date") { +review.formattedDate() }
+                    div(classes = "post-preview") { unsafe { +review.preview } }
+                    a(href = review.slug.removePrefix("model-reviews/"), classes = "read-more") { +"Read review..." }
+                }
+            }
+        }
+        hr {}
+        generateSocialLinks()()
+        script(src = "../theme.js") {}
+    }
+}
+
 fun generateSocialLinks(): FlowContent.() -> Unit = {
     div(classes = "social-links") {
         h3 { +"Connect with me" }
@@ -141,6 +191,11 @@ fun generateIndex(posts: List<Post>): String = createHTML().html {
     }
     body {
         button(classes = "theme-toggle") { id = "theme-toggle"; +"🌙" }
+        nav {
+            a(href = "index.html") { +"My Blog" }
+            +" | "
+            a(href = "model-reviews/index.html") { +"AI Model Reviews" }
+        }
         h1 { +"My Blog" }
         div(classes = "post-list") {
             posts.forEach { post ->
@@ -162,21 +217,21 @@ fun generateIndex(posts: List<Post>): String = createHTML().html {
     }
 }
 
-fun generatePost(post: Post): String = createHTML().html {
+fun generatePost(post: Post, modelReviews: Boolean = false): String = createHTML().html {
     head {
         meta(charset = "utf-8")
         title(post.title)
-        link(rel = "stylesheet", href = "style.css")
+        link(rel = "stylesheet", href = if (modelReviews) "../style.css" else "style.css")
     }
     body {
         button(classes = "theme-toggle") { id = "theme-toggle"; +"🌙" }
-        a(href = "index.html") { +"← Back to home" }
+        a(href = if (modelReviews) "index.html" else "index.html") { if (modelReviews) +"← Back" else +"← Back to home" }
         h1 { +post.title }
         p { +post.formattedDate() }
         unsafe { +post.content }
         hr {}
         generateSocialLinks()()
-        script(src = "theme.js") {}
+        script(src = if (modelReviews) "../theme.js" else "theme.js") {}
     }
 }
 
