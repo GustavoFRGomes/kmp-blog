@@ -107,8 +107,10 @@ fun main() {
         val preview = extractPreview(html)
         val dateMatch = """^date:\s*(.+)$""".toRegex(RegexOption.MULTILINE).find(md)
         val date = dateMatch?.groupValues?.get(1)?.trim() ?: ""
-        Post(title, date, html, "model-reviews/" + file.nameWithoutExtension + ".html", preview, false)
-    }?.sortedByDescending { it.date } ?: emptyList()
+        val draftMatch = """^draft:\s*(true|false)$""".toRegex(RegexOption.MULTILINE).find(md)
+        val isDraft = draftMatch?.groupValues?.get(1)?.trim() == "true"
+        Post(title, date, html, "model-reviews/" + file.nameWithoutExtension + ".html", preview, isDraft)
+    }?.filter { !it.isDraft }?.sortedByDescending { it.date } ?: emptyList()
 
     val modelReviewsOutputDir = File(outputDir, "model-reviews")
     modelReviewsOutputDir.mkdirs()
